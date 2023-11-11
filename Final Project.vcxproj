@@ -137,13 +137,16 @@
     <Image Include="concrete1.PNG" />
     <Image Include="concrete2.PNG" />
     <Image Include="concrete3.PNG" />
+    <Image Include="glass.jpg" />
     <Image Include="grass.jpg" />
     <Image Include="grass_2.png" />
     <Image Include="new_grass.jpg" />
     <Image Include="pillar.jpg" />
     <Image Include="road.jpg" />
+    <Image Include="table.jpg" />
     <Image Include="tiles.jpg" />
     <Image Include="transparent.png" />
+    <Image Include="wood.jpg" />
   </ItemGroup>
   <ItemGroup>
     <None Include="fragmentShader.fs" />

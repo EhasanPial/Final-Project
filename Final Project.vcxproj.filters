@@ -51,6 +51,15 @@
     <Image Include="tiles.jpg">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="glass.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="wood.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="table.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="fragmentShader.fs">
