@@ -162,9 +162,11 @@
   <ItemGroup>
     <ClInclude Include="basic_camera.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="curveObject.h" />
     <ClInclude Include="directionalLight.h" />
     <ClInclude Include="pointLight.h" />
     <ClInclude Include="shader.h" />
+    <ClInclude Include="sphere.h" />
     <ClInclude Include="spotLight.h" />
     <ClInclude Include="stb_image.h" />
   </ItemGroup>

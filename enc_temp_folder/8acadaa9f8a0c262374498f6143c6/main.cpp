@@ -662,8 +662,7 @@ int main()
 		Baloon(ourShader , translateMatrix, color1, globalBallonRotation);
 
 		translateMatrix = glm::translate(identityMatrix, glm::vec3(5.0f + 14.0, 2.5, -10));
-		Baloon(ourShader
-			, translateMatrix, color1, globalBallonRotation);
+		Baloon(ourShader , translateMatrix, color1, globalBallonRotation);
 	 
 		 
 
