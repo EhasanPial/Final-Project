@@ -718,10 +718,6 @@ int main()
 		translateMatrix = glm::translate(identityMatrix, glm::vec3(0.0, 0.0, 0.0));
 		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		CafeShop(ourShader, translateMatrix, color1);
-
-		translateMatrix = glm::translate(identityMatrix, glm::vec3(9.6, 1.0, -18.7f));
-		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-		RotateChairY(ourShader, translateMatrix, 180);
 		 
 		translate_table = 0;
 		for (int i = 0; i < 2; i++) {

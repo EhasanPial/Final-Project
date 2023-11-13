@@ -719,7 +719,7 @@ int main()
 		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		CafeShop(ourShader, translateMatrix, color1);
 
-		translateMatrix = glm::translate(identityMatrix, glm::vec3(9.6, 1.0, -18.7f));
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(14, 1.0, -10.0f));
 		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		RotateChairY(ourShader, translateMatrix, 180);
 		 

@@ -162,11 +162,12 @@ public:
          
 
         lightingShader.use();
-        lightingShader.setMat4("model", moveMatrix * model);
         lightingShader.setVec3("material.ambient", this->ambient);
         lightingShader.setVec3("material.diffuse", this->diffuse);
         lightingShader.setVec3("material.specular", this->specular);
         lightingShader.setFloat("material.shininess", this->shininess);
+        lightingShader.setMat4("model", moveMatrix * model);
+        
 
         
 

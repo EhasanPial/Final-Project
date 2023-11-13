@@ -60,6 +60,9 @@
     <Image Include="table.jpg">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="marble.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <None Include="fragmentShader.fs">

@@ -29,7 +29,9 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
 
 void Grasses(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color);
-void Baloon(Shader ourShader,  glm::mat4 moveMatrix, glm::vec4 color, float rotation);
+void CafeFoodCounter(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color);
+void CafeShop(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color);
+void Baloon(Shader ourShader, Shader sphereShader,  glm::mat4 moveMatrix, glm::vec4 color, float rotation);
 
 void drawCube(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, float spec, float shininess);
 
@@ -39,7 +41,7 @@ void ChotoBlocks(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color);
 void Pillars(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color);
 void Table(Shader ourShader, glm::mat4 moveMatrix, float rotation, bool square);
 void Chair(Shader ourShader, glm::mat4 moveMatrix, float rotation);
-void Gate(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color);
+void RotateChairY(Shader ourShader, glm::mat4& moveMatrix, float angleDegrees);
 void load_texture(unsigned int& texture, string image_name, GLenum format);
 
 // settings
@@ -122,7 +124,7 @@ float spotLightOn = 0.0;
 
 
 // Textures
-unsigned int texture0, texture1, redBrickTex, texture3, texture4, tilesTex, texture6, texture7, woodtex, glasstex, tabletex;
+unsigned int texture0, texture1, redBrickTex, texture3, texture4, tilesTex, texture6, texture7, woodtex, glasstex, tabletex, marbeltex;
 CurveObj co1;
 
 int main()
@@ -170,7 +172,7 @@ int main()
 	// build and compile our shader zprogram
 	// ------------------------------------
 	Shader ourShader("vertexShader.vs", "fragmentShader.fs");
-	 
+	Shader sphereShader("vertexShader.vs", "fragmentShader.fs");
 	Shader lightCubeShader("lightVertexShader.vs", "lightFragmentShader.fs");
 
 	// set up vertex data (and buffer(s)) and configure vertex attributes
@@ -366,7 +368,7 @@ int main()
 	load_texture(redBrickTex, "brickwall_2.jpg", GL_RGB);
 	load_texture(texture3, "brickwall_2.jpg", GL_RGB);
 	load_texture(texture4, "pillar.jpg", GL_RGB);
-
+	load_texture(marbeltex, "marble.jpg", GL_RGB);
 	load_texture(tilesTex, "tiles.jpg", GL_RGB);
 	load_texture(glasstex, "glass.jpg", GL_RGB);
 	load_texture(tabletex, "table.jpg", GL_RGB);
@@ -486,8 +488,11 @@ int main()
 		float fixY = 0.45f;
 		float chairX = 0.1f;
 
+		/*co1.hollowBezier(points, (sizeof(points) / sizeof(points[0])) / 3 - 1, ourShader);
+		co1.translation = glm::vec3(0.0f, 1.0f, 0.0f);
+		co1.scale = glm::vec3(0.2f, 0.3f, 0.2f);*/
 
-
+		 
 		//********** Object making ***********
 
 		glActiveTexture(GL_TEXTURE0);
@@ -551,7 +556,7 @@ int main()
 		}
 		float translate_chair = -0.2;
 		for (int i = 0; i < 10; i++) {
-			translateMatrix = glm::translate(identityMatrix, glm::vec3(18.0 + translate_chair, 1.0, -6.0 + 0.75));
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(18.0 + translate_chair, 1.0, -6.0 + 0.7));
 			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 			Chair(ourShader, translateMatrix, 0.0);
 			translate_chair += 0.6;
@@ -559,74 +564,195 @@ int main()
 
 		translate_chair = -0.2;
 		for (int i = 0; i < 10; i++) {
-			translateMatrix = glm::translate(identityMatrix, glm::vec3(18.0 + translate_chair, 1.0, -6.0 - 0.75));
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(18.0 + 0.6 + translate_chair, 1.0, -6.0  ));
 			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-			Chair(ourShader, translateMatrix, 4.0);
+			RotateChairY(ourShader, translateMatrix, 180.0); 
 			translate_chair += 0.6;
 		}
+
+		 
 
 		translate_table = 0.0;
 		for (int i = 0; i < 3; i++) {
 			translateMatrix = glm::translate(identityMatrix, glm::vec3(20.0 - translate_table, 1.0, -10.0));
 			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 			Table(ourShader, translateMatrix, 90.0f, true);
-			translate_table += 6.0;
+			
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(20.0f - translate_table + 1.4 - .5, 1.0, -10.0));
+			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			Chair(ourShader, translateMatrix, 180.0);
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(20.0f - translate_table + 0.7 -.5, 1.0, -10.0));
+			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			Chair(ourShader, translateMatrix, 180.0);
+
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(20.0f - translate_table + 1.4, 1.0, -10.0 -1.5));
+			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			RotateChairY(ourShader, translateMatrix, 180.0);
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(20.0f - translate_table + 0.7, 1.0, -10.0 - 1.5));
+			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			RotateChairY(ourShader, translateMatrix, 180.0);
+
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(20.0f - translate_table + 1.4 - 1.5, 1.0, -10.0 -1.5+.65));
+			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			RotateChairY(ourShader, translateMatrix, -90.0);
+
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(20.0f - translate_table + 1.4 -1.5 + 1.60f, 1.0, -10.0 - 1.5 + 1.1));
+			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			RotateChairY(ourShader, translateMatrix, 90.0);
+			 
+			translate_table += 5.0;
 		}
+		 
+		 
 
 
 		translateMatrix = glm::translate(identityMatrix, glm::vec3(12.0, 1.0, -5.0));
 		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		Table(ourShader, translateMatrix, 90.0f, true);
 
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(8.0 + 1.6+4, 1.0, -5.0 - 0.5));
+		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		RotateChairY(ourShader, translateMatrix, 90.0);
+
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(8.0 + 1.6 - 0.8+4, 1.0, -5.0 - 0.5 - 1.2));
+		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		RotateChairY(ourShader, translateMatrix, 180.0);
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(8.0 + 1.4+4, 1.0, -5.0 - 0.5 - 1.2));
+		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		RotateChairY(ourShader, translateMatrix, 180.0);
+
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(8.0 + 1.6 - 1.0 - 0.6+4, 1.0, -5.0 - 0.5 - 1.2 + 1.5));
+		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		RotateChairY(ourShader, translateMatrix, 0.0);
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(8.0 + 1.4 - 0.6, 1.0, -5.0 - 0.5 - 1.2 + 1.5));
+		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		RotateChairY(ourShader, translateMatrix, 0.0);
+
+
 		translateMatrix = glm::translate(identityMatrix, glm::vec3(8.0, 1.0, -5.0));
 		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		Table(ourShader, translateMatrix, 90.0f, true);
 
 
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(8.0 + 1.6, 1.0, -5.0-0.5));
+		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		RotateChairY(ourShader, translateMatrix, 90.0);
 
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(8.0 + 1.6-0.8, 1.0, -5.0 - 0.5 -1.2));
+		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		RotateChairY(ourShader, translateMatrix, 180.0);
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(8.0 + 1.4, 1.0, -5.0 - 0.5 - 1.2));
+		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		RotateChairY(ourShader, translateMatrix, 180.0);
+
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(8.0 + 1.6 - 1.0-0.6, 1.0, -5.0 - 0.5 - 1.2+1.5));
+		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		RotateChairY(ourShader, translateMatrix, 0.0);
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(8.0 + 1.4 - 0.6, 1.0, -5.0 - 0.5 - 1.2+1.5));
+		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		RotateChairY(ourShader, translateMatrix, 0.0);
 
 		translate_table = 0.0;
 		for (int i = 0; i < 2; i++) {
-			translateMatrix = glm::translate(identityMatrix, glm::vec3(20.0, 1.0, -16.0 + translate_table));
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(20.0, 1.0, -16.0 + translate_table ));
 			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 			Table(ourShader, translateMatrix, 90.0f, false);
-			translate_table += 1.5;
 
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(20.0 + 1.0, 1.0, -16.0 + translate_table));
+			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			RotateChairY(ourShader, translateMatrix, 90.0);
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(20.0 + 1.0, 1.0, -16.0 + translate_table -0.6));
+			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			RotateChairY(ourShader, translateMatrix, 90.0);
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(20.0 + 1.0, 1.0, -16.0 + translate_table - 0.6));
+			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			RotateChairY(ourShader, translateMatrix, 90.0);
+
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(20.0 - 0.5, 1.0, -16.0 + translate_table-0.6));
+			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			RotateChairY(ourShader, translateMatrix, -90.0);
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(20.0 - 0.3, 1.0, -16.0 + translate_table - 0.6-0.6));
+			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			RotateChairY(ourShader, translateMatrix, -90.0);
+ 
+
+			translate_table += 1.5;
+			 
+			 
 
 		}
-
-		translate_table = 0.0;
+		translate_table =0 ;
 		for (int i = 0; i < 2; i++) {
 			translateMatrix = glm::translate(identityMatrix, glm::vec3(16.0, 1.0, -16.0 + translate_table));
 			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 			Table(ourShader, translateMatrix, 90.0f, false);
+
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(16.0 + 1.0, 1.0, -16.0 + translate_table));
+			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			RotateChairY(ourShader, translateMatrix, 90.0);
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(16.0 + 1.0, 1.0, -16.0 + translate_table - 0.6));
+			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			RotateChairY(ourShader, translateMatrix, 90.0);
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(16.0 + 1.0, 1.0, -16.0 + translate_table - 0.6));
+			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			RotateChairY(ourShader, translateMatrix, 90.0);
+
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(16.0 - 0.5, 1.0, -16.0 + translate_table - 0.6));
+			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			RotateChairY(ourShader, translateMatrix, -90.0);
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(16.0 - 0.3, 1.0, -16.0 + translate_table - 0.6 - 0.6));
+			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			RotateChairY(ourShader, translateMatrix, -90.0);
+
+
 			translate_table += 1.5;
 
 
+
 		}
-		translate_table = 0.0;
+
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(4.0, 0.0, 0.0));
+		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		CafeFoodCounter(ourShader, translateMatrix, color1);
+
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(0.0, 0.0, 0.0));
+		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		CafeShop(ourShader, translateMatrix, color1);
+		 
+		translate_table = 0;
 		for (int i = 0; i < 2; i++) {
 			translateMatrix = glm::translate(identityMatrix, glm::vec3(12.0, 1.0, -16.0 + translate_table));
 			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 			Table(ourShader, translateMatrix, 90.0f, false);
-			translate_table += 1.5;
 
-
-		}
-		translate_table = 0.0;
-		for (int i = 0; i < 2; i++) {
-			translateMatrix = glm::translate(identityMatrix, glm::vec3(8.0, 1.0, -16.0 + translate_table));
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(12.0 + 1.0, 1.0, -16.0 + translate_table));
 			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-			Table(ourShader, translateMatrix, 90.0f, false);
+			RotateChairY(ourShader, translateMatrix, 90.0);
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(12.0 + 1.0, 1.0, -16.0 + translate_table - 0.6));
+			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			RotateChairY(ourShader, translateMatrix, 90.0);
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(12.0 + 1.0, 1.0, -16.0 + translate_table - 0.6));
+			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			RotateChairY(ourShader, translateMatrix, 90.0);
+
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(12.0 - 0.5, 1.0, -16.0 + translate_table - 0.6));
+			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			RotateChairY(ourShader, translateMatrix, -90.0);
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(12.0 - 0.3, 1.0, -16.0 + translate_table - 0.6 - 0.6));
+			color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+			RotateChairY(ourShader, translateMatrix, -90.0);
+
+
 			translate_table += 1.5;
 
 
-		}
 
-		// curve
-		/*co1.hollowBezier(points, (sizeof(points) / sizeof(points[0])) / 3 - 1, ourShader);
-		co1.translation = glm::vec3(0.0f, 1.0f, 0.0f);
-		co1.scale = glm::vec3(0.2f, 0.3f, 0.2f);*/
+		}
+		
+		
+		 
+
+	 
 
 		if (isglobalBallonOn) {
 			 
@@ -653,21 +779,23 @@ int main()
 			Baloon(ourShader, translateMatrix, color1, globalBallonRotation);
 			translate_ballon += 7.0;  
 		}*/
-
-		translateMatrix = glm::translate(identityMatrix, glm::vec3(5.0f , 2.5, -10));
-		Baloon(ourShader , translateMatrix, color1, globalBallonRotation);
-		 
-
-		translateMatrix = glm::translate(identityMatrix, glm::vec3(5.0f + 7.0, 2.5, -10));
-		Baloon(ourShader , translateMatrix, color1, globalBallonRotation);
-
-		translateMatrix = glm::translate(identityMatrix, glm::vec3(5.0f + 14.0, 2.5, -10));
-		Baloon(ourShader , translateMatrix, color1, globalBallonRotation);
 	 
 		 
 
+	/*	translateMatrix = glm::translate(identityMatrix, glm::vec3(5.0f, 2.5, -10));
+		Baloon(ourShader, sphereShader, translateMatrix, color1, globalBallonRotation);
 
-		Gate(ourShader, translateMatrix, color1);
+
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(5.0f + 7.0, 2.5, -10));
+		Baloon(ourShader, sphereShader, translateMatrix, color1, globalBallonRotation);
+
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(5.0f + 14.0, 2.5, -10));
+		Baloon(ourShader, sphereShader
+			, translateMatrix, color1, globalBallonRotation);
+		 */
+
+
+		 
 
 		//    glDrawArrays(GL_TRIANGLES, 0, 36);
 		//}
@@ -692,7 +820,7 @@ int main()
 }
 
 
-void Baloon(Shader ourShader,  glm::mat4 moveMatrix, glm::vec4 color, float rotation)
+void Baloon(Shader ourShader, Shader sphereShader , glm::mat4 moveMatrix, glm::vec4 color, float rotation)
 {
 	glm::mat4 identityMatrix = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
 	glm::mat4 translateMatrix, scaleMatrix, model, rotateXMatrix, translateToPivot, translateFromPivot;
@@ -729,193 +857,35 @@ void Baloon(Shader ourShader,  glm::mat4 moveMatrix, glm::vec4 color, float rota
 
 	Sphere s1 = Sphere();
 	glBindTexture(GL_TEXTURE_2D, texture0);
-	glm::vec3 wind = glm::vec3(0.0f, 0.0f, -5.0f);
 	s1.drawSphere(ourShader, moveMatrix, pivot1, translateMatrix,
 		translateToPivot, translateFromPivot, rotateXMatrix);
 	s1.ambient = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 	s1.diffuse = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
 	s1.specular = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 	s1.scale = glm::vec3(.1f, 0.1f, 0.1f);
-
+	
+	ourShader.use();
 
 }
 float  gateAngle = 0;
 float isGateOpening = 1.00;
 float gateSpeed = 0.5f;
-void Gate(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color)
+
+void RotateChairY(Shader ourShader, glm::mat4& moveMatrix, float angleDegrees)
 {
-	glBindTexture(GL_TEXTURE_2D, texture0);
-	// Rotation
-	glm::mat4 identityMatrix = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-	glm::mat4 translateMatrix, scaleMatrix, model, rotateYMatrix;
+	// Create a rotation matrix around the y-axis
+	glm::mat4 rotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(angleDegrees), glm::vec3(0.0f, 1.0f, 0.0f));
 
-	//static parts
-	//1
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(7.3f, 0.6f, 15.1f));
-	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.1f, 0.05f, 0.05f));
-	model = translateMatrix * scaleMatrix;
-	ourShader.setMat4("model", moveMatrix * model);
-	ourShader.setVec4("material.ambient", color * 0.5f);
-	ourShader.setVec4("material.diffuse", color * 0.5f);
-	ourShader.setVec4("material.specular", glm::vec4(0.3f, 0.3f, 0.3f, 1.0f));
-	ourShader.setFloat("material.shininess", 32.0f);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-	//2
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(7.3f, -0.2f, 15.1f));
-	model = translateMatrix * scaleMatrix;
-	ourShader.setMat4("model", moveMatrix * model);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-	//3
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(9.3f, 0.6f, 15.1f));
-	model = translateMatrix * scaleMatrix;
-	ourShader.setMat4("model", moveMatrix * model);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-	//4
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(9.3f, -0.2f, 15.1f));
-	model = translateMatrix * scaleMatrix;
-	ourShader.setMat4("model", moveMatrix * model);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+	// Combine the rotation matrix with the existing transformation matrix
+	moveMatrix =  moveMatrix * rotationMatrix;
 
-
-
-	//dynamic parts
-	glm::mat4 translateToPivot, translateFromPivot;
-	glm::vec4 translateToPivotOrg, translateFromPivotOrg;
-	glm::vec3 pivot1, pivot2;
-
-	pivot1 = glm::vec3(7.35, 0.0, 15.1125);
-	pivot2 = glm::vec3(9.30, 0.0, 15.1125);
-
-	gateAngle += isGateOpening * gateSpeed;
-	if (isGateOpening == -1.0f)
-		gateAngle = max(0.0f, gateAngle);
-	if (isGateOpening == 1.0f)
-		gateAngle = min(90.0f, gateAngle);
-
-	//***left side***//
-	translateToPivot = glm::translate(identityMatrix, -pivot1);
-	translateFromPivot = glm::translate(identityMatrix, pivot1);
-	rotateYMatrix = glm::rotate(identityMatrix, glm::radians(gateAngle), glm::vec3(0.0f, 1.0f, 0.0f));
-
-	//square
-	//1
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(7.34f, -0.3f, 15.09f));
-	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.1f, 2.0f, 0.1f));
-	model = translateFromPivot * rotateYMatrix * translateToPivot * translateMatrix * scaleMatrix;
-	ourShader.setMat4("model", moveMatrix * model);
-	ourShader.setVec4("material.ambient", color);
-	ourShader.setVec4("material.diffuse", color);
-	ourShader.setVec4("material.specular", glm::vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	ourShader.setFloat("material.shininess", 32.0f);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-	//2
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(8.26f, -0.3f, 15.09f));
-	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.1f, 2.5f, 0.1f));
-	model = translateFromPivot * rotateYMatrix * translateToPivot * translateMatrix * scaleMatrix;
-	ourShader.setMat4("model", moveMatrix * model);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-	//3
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(7.34f, -0.3f, 15.09f));
-	scaleMatrix = glm::scale(identityMatrix, glm::vec3(1.9f, 0.1f, 0.1f));
-	model = translateFromPivot * rotateYMatrix * translateToPivot * translateMatrix * scaleMatrix;
-	ourShader.setMat4("model", moveMatrix * model);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-	//4
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(7.34f, 0.65f, 15.09f));
-	scaleMatrix = glm::scale(identityMatrix, glm::vec3(1.9f, 0.1f, 0.1f));
-	model = translateFromPivot * rotateYMatrix * translateToPivot * translateMatrix * scaleMatrix;
-	ourShader.setMat4("model", moveMatrix * model);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-
-	//bars
-	//1
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(7.52f, -0.3f, 15.09f));
-	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.1f, 2.1f, 0.1f));
-	model = translateFromPivot * rotateYMatrix * translateToPivot * translateMatrix * scaleMatrix;
-	ourShader.setMat4("model", moveMatrix * model);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-	//2
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(7.7f, -0.3f, 15.09f));
-	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.1f, 2.2f, 0.1f));
-	model = translateFromPivot * rotateYMatrix * translateToPivot * translateMatrix * scaleMatrix;
-	ourShader.setMat4("model", moveMatrix * model);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-	//3
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(7.88f, -0.3f, 15.09f));
-	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.1f, 2.3f, 0.1f));
-	model = translateFromPivot * rotateYMatrix * translateToPivot * translateMatrix * scaleMatrix;
-	ourShader.setMat4("model", moveMatrix * model);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-	//4
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(8.06f, -0.3f, 15.09f));
-	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.1f, 2.4f, 0.1f));
-	model = translateFromPivot * rotateYMatrix * translateToPivot * translateMatrix * scaleMatrix;
-	ourShader.setMat4("model", moveMatrix * model);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-
-
-
-	//***right side//
-	translateToPivot = glm::translate(identityMatrix, -pivot2);
-	translateFromPivot = glm::translate(identityMatrix, pivot2);
-	rotateYMatrix = glm::rotate(identityMatrix, glm::radians(-gateAngle), glm::vec3(0.0f, 1.0f, 0.0f));
-
-	//square
-	//1
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(9.25f, -0.3f, 15.09f));
-	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.1f, 2.0f, 0.1f));
-	model = translateFromPivot * rotateYMatrix * translateToPivot * translateMatrix * scaleMatrix;
-	ourShader.setMat4("model", moveMatrix * model);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-	//2
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(8.33f, -0.3f, 15.09f));
-	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.1f, 2.5f, 0.1f));
-	model = translateFromPivot * rotateYMatrix * translateToPivot * translateMatrix * scaleMatrix;
-	ourShader.setMat4("model", moveMatrix * model);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-	//3
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(8.33f, -0.3f, 15.09f));
-	scaleMatrix = glm::scale(identityMatrix, glm::vec3(1.9f, 0.1f, 0.1f));
-	model = translateFromPivot * rotateYMatrix * translateToPivot * translateMatrix * scaleMatrix;
-	ourShader.setMat4("model", moveMatrix * model);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-	//4
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(8.33f, 0.65f, 15.09f));
-	scaleMatrix = glm::scale(identityMatrix, glm::vec3(1.9f, 0.1f, 0.1f));
-	model = translateFromPivot * rotateYMatrix * translateToPivot * translateMatrix * scaleMatrix;
-	ourShader.setMat4("model", moveMatrix * model);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-
-	//bars
-	//1
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(9.07f, -0.3f, 15.09f));
-	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.1f, 2.1f, 0.1f));
-	model = translateFromPivot * rotateYMatrix * translateToPivot * translateMatrix * scaleMatrix;
-	ourShader.setMat4("model", moveMatrix * model);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-	//2
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(8.89f, -0.3f, 15.09f));
-	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.1f, 2.2f, 0.1f));
-	model = translateFromPivot * rotateYMatrix * translateToPivot * translateMatrix * scaleMatrix;
-	ourShader.setMat4("model", moveMatrix * model);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-	//3
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(8.71f, -0.3f, 15.09f));
-	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.1f, 2.3f, 0.1f));
-	model = translateFromPivot * rotateYMatrix * translateToPivot * translateMatrix * scaleMatrix;
-	ourShader.setMat4("model", moveMatrix * model);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-	//4
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(8.53f, -0.3f, 15.09f));
-	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.1f, 2.4f, 0.1f));
-	model = translateFromPivot * rotateYMatrix * translateToPivot * translateMatrix * scaleMatrix;
-	ourShader.setMat4("model", moveMatrix * model);
-	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-
-
+	// Call the Chair function with the updated moveMatrix to draw the chair
+	Chair(ourShader, moveMatrix,0.0);
 }
+
 void Grasses(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color)
 {
+	 
 	glm::mat4 identityMatrix = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
 	glm::mat4 translateMatrix, scaleMatrix, model;
 
@@ -933,7 +903,107 @@ void Grasses(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color)
 
 
 }
+void CafeShop(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color) {
 
+	glm::mat4 identityMatrix = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+	glm::mat4 translateMatrix, scaleMatrix, model;
+	translateMatrix = glm::translate(identityMatrix, glm::vec3(8.0, 0.5, -20.0f)); // grass 20 e sesh hoiche
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.2, 1.0f, 4.0f));
+	model = translateMatrix * scaleMatrix;
+	ourShader.setMat4("model", moveMatrix * model);
+	ourShader.setVec4("material.ambient", color);
+	ourShader.setVec4("material.diffuse", color);
+	ourShader.setVec4("material.specular", color);
+	ourShader.setFloat("material.shininess", 32.0f);
+	glBindTexture(GL_TEXTURE_2D, redBrickTex);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+	 
+	translateMatrix = glm::translate(identityMatrix, glm::vec3(8.0+2.0, 0.5, -20.0f)); // grass 20 e sesh hoiche
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.2, 1.0f, 4.0f));
+	model = translateMatrix * scaleMatrix;
+	ourShader.setMat4("model", moveMatrix * model);
+	ourShader.setVec4("material.ambient", color);
+	ourShader.setVec4("material.diffuse", color);
+	ourShader.setVec4("material.specular", color);
+	ourShader.setFloat("material.shininess", 32.0f);
+	glBindTexture(GL_TEXTURE_2D, redBrickTex);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+	glm::mat4 rotateYMatrix;
+	rotateYMatrix = glm::rotate(identityMatrix, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	translateMatrix = glm::translate(identityMatrix, glm::vec3(8.0 -2.5 /2 + 1.5  , 0.5, -18.0f)); // grass 20 e sesh hoiche
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.3, 1.0f, 3.0f));
+	model = translateMatrix * rotateYMatrix * scaleMatrix;
+	ourShader.setMat4("model", moveMatrix * model);
+	ourShader.setVec4("material.ambient", color);
+	ourShader.setVec4("material.diffuse", color);
+	ourShader.setVec4("material.specular", color);
+	ourShader.setFloat("material.shininess", 32.0f);
+	glBindTexture(GL_TEXTURE_2D, redBrickTex);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+
+	 
+	rotateYMatrix = glm::rotate(identityMatrix, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	translateMatrix = glm::translate(identityMatrix, glm::vec3(8.0 - 2.5 / 2 + 1.5, 0.5+0.5, -18.0+0.02f)); // grass 20 e sesh hoiche
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.5, 0.05f, 3.0f));
+	model = translateMatrix * rotateYMatrix * scaleMatrix;
+	ourShader.setMat4("model", moveMatrix * model);
+	ourShader.setVec4("material.ambient", color);
+	ourShader.setVec4("material.diffuse", color);
+	ourShader.setVec4("material.specular", color);
+	ourShader.setFloat("material.shininess", 32.0f);
+	glBindTexture(GL_TEXTURE_2D, marbeltex);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+}
+void CafeFoodCounter(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color) {
+	glm::mat4 identityMatrix = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+	glm::mat4 translateMatrix, scaleMatrix, model;
+
+	// pillars 
+	float translate_pillar = 0.0;
+	for (int i = 0; i < 3; i++) {
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(0.0f, 1+0.05, -20.0f + translate_pillar)); // grass 20 e sesh hoiche
+		scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.6f, 5.8f, 0.8f));
+		model = translateMatrix * scaleMatrix;
+		ourShader.setMat4("model", moveMatrix * model);
+		ourShader.setVec4("material.ambient", color);
+		ourShader.setVec4("material.diffuse", color);
+		ourShader.setVec4("material.specular", color);
+		ourShader.setFloat("material.shininess", 32.0f);
+		glBindTexture(GL_TEXTURE_2D, redBrickTex);
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+		translate_pillar += 8.3;
+	}
+
+
+	//food 
+	
+	translateMatrix = glm::translate(identityMatrix, glm::vec3(0.0f, 0.5, -20.0f)); // grass 20 e sesh hoiche
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(2, 1.0f, 34.0f));
+	model = translateMatrix * scaleMatrix;
+	ourShader.setMat4("model", moveMatrix * model);
+	ourShader.setVec4("material.ambient", color);
+	ourShader.setVec4("material.diffuse", color);
+	ourShader.setVec4("material.specular", color);
+	ourShader.setFloat("material.shininess", 32.0f);
+	glBindTexture(GL_TEXTURE_2D, redBrickTex);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+	
+	translateMatrix = glm::translate(identityMatrix, glm::vec3(0.0f, 1, -20.0f)); // grass 20 e sesh hoiche
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(2.2, 0.1f, 34.0f));
+	model = translateMatrix  * scaleMatrix;
+	ourShader.setMat4("model", moveMatrix * model);
+	ourShader.setVec4("material.ambient", color);
+	ourShader.setVec4("material.diffuse", color);
+	ourShader.setVec4("material.specular", color);
+	ourShader.setFloat("material.shininess", 32.0f);
+	glBindTexture(GL_TEXTURE_2D, marbeltex);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+}
 void Floor(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color)
 {
 	glm::mat4 identityMatrix = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
@@ -1434,36 +1504,32 @@ void Table(Shader ourShader, glm::mat4 moveMatrix, float rotation, bool square)
 void Chair(Shader ourShader, glm::mat4 moveMatrix, float rotation)
 {
 	glm::mat4 identityMatrix = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-	glm::mat4 translateMatrix, scaleMatrix, model, rotateYMatrix;
+	glm::mat4 translateMatrix, scaleMatrix, model;
 
 	float fixLeg = 0.7f;
 	float fixY = 0.1f;
-	float fixYWhole = -0.08f;
-	float little_trans = 0.24f;
+	float fixYWhole = -0.17f;
 
 	// Top
-	rotateYMatrix = glm::rotate(identityMatrix, glm::radians(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(0.11f + little_trans, 0.0f - fixY + fixYWhole, 0.0f));
+	translateMatrix = glm::translate(identityMatrix, glm::vec3(0.11f, 0.0f - fixY + fixYWhole, 0.0f));
 	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.75f, 0.07f, 0.7f));
-	model = translateMatrix * rotateYMatrix * scaleMatrix;
+	model = translateMatrix * scaleMatrix;
 	ourShader.setMat4("model", moveMatrix * model);
 	ourShader.setVec4("material.ambient", glm::vec4(0.9f, 0.3f, 0.0f, 1.0f));
 	ourShader.setVec4("material.diffuse", glm::vec4(0.9f, 0.3f, 0.0f, 1.0f));
 	ourShader.setVec4("material.specular", glm::vec4(0.5f, 0.5f, 0.5f, 0.5f));
 	ourShader.setFloat("material.shininess", 32.0f);
-
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
 	// Leg 1
 	glm::mat4 identityMatrix1 = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-	glm::mat4 translateMatrix1, scaleMatrix1, model1, rotateYMatrixL1;
-	rotateYMatrixL1 = glm::rotate(identityMatrix, glm::radians(-0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-	translateMatrix1 = glm::translate(identityMatrix1, glm::vec3(0.13f + little_trans, -0.32f + fixYWhole, 0.01f));
+	glm::mat4 translateMatrix1, scaleMatrix1, model1;
+	translateMatrix1 = glm::translate(identityMatrix1, glm::vec3(0.13f, -0.32f + fixYWhole, 0.01f));
 	scaleMatrix1 = glm::scale(identityMatrix1, glm::vec3(0.07f, 0.7f * fixLeg, 0.07f));
-	model1 = translateMatrix1 * rotateYMatrix * scaleMatrix1;
+	model1 = translateMatrix1 * scaleMatrix1;
 	ourShader.setMat4("model", moveMatrix * model1);
-	ourShader.setVec4("material.ambient", glm::vec4(0.43, 0.164, 0.043, 1.0f));
-	ourShader.setVec4("material.diffuse", glm::vec4(0.43, 0.164, 0.043, 1.0f));
+	ourShader.setVec4("material.ambient", glm::vec4(0.9f, 0.9f, 1.0f, 1.0f));
+	ourShader.setVec4("material.diffuse", glm::vec4(0.9f, 0.9f, 1.0f, 1.0f));
 	ourShader.setVec4("material.specular", glm::vec4(0.5f, 0.5f, 0.5f, 0.5f));
 	ourShader.setFloat("material.shininess", 32.0f);
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
@@ -1472,47 +1538,47 @@ void Chair(Shader ourShader, glm::mat4 moveMatrix, float rotation)
 	// Leg 2
 	glm::mat4 identityMatrix2 = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
 	glm::mat4 translateMatrix2, scaleMatrix2, model2;
-	translateMatrix2 = glm::translate(identityMatrix2, glm::vec3(0.13f + little_trans, -0.32f + fixYWhole, 0.28f));
+	translateMatrix2 = glm::translate(identityMatrix2, glm::vec3(0.13f, -0.32f + fixYWhole, 0.28f));
 	scaleMatrix2 = glm::scale(identityMatrix2, glm::vec3(0.07f, 0.7f * fixLeg, 0.07f));
-	model2 = translateMatrix2 * rotateYMatrix * scaleMatrix2;
+	model2 = translateMatrix2 * scaleMatrix2;
 	ourShader.setMat4("model", moveMatrix * model2);
-	ourShader.setVec4("material.ambient", glm::vec4(0.9f, 0.9f, 1.0f, 1.0f));
+	/*ourShader.setVec4("material.ambient", glm::vec4(0.9f, 0.9f, 1.0f, 1.0f));
 	ourShader.setVec4("material.diffuse", glm::vec4(0.9f, 0.9f, 1.0f, 1.0f));
 	ourShader.setVec4("material.specular", glm::vec4(0.5f, 0.5f, 0.5f, 0.5f));
-	ourShader.setFloat("material.shininess", 32.0f);
+	ourShader.setFloat("material.shininess", 32.0f);*/
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
 
 	//// Leg 3
 	//glm::mat4 translateMatrix1, rotateXMatrix1, rotateYMatrix1, rotateZMatrix1, scaleMatrix1, model1;
-	translateMatrix1 = glm::translate(identityMatrix1, glm::vec3(0.43f + little_trans, -0.32f + fixYWhole, 0.01f));
+	translateMatrix1 = glm::translate(identityMatrix1, glm::vec3(0.43f, -0.32f + fixYWhole, 0.01f));
 	scaleMatrix1 = glm::scale(identityMatrix1, glm::vec3(0.07f, 0.7f * fixLeg, 0.07f));
-	model1 = translateMatrix1 * rotateYMatrix * scaleMatrix1;
+	model1 = translateMatrix1 * scaleMatrix1;
 	ourShader.setMat4("model", moveMatrix * model1);
-	ourShader.setVec4("material.ambient", glm::vec4(0.9f, 0.9f, 1.0f, 1.0f));
+	/*ourShader.setVec4("material.ambient", glm::vec4(0.9f, 0.9f, 1.0f, 1.0f));
 	ourShader.setVec4("material.diffuse", glm::vec4(0.9f, 0.9f, 1.0f, 1.0f));
 	ourShader.setVec4("material.specular", glm::vec4(0.5f, 0.5f, 0.5f, 0.5f));
-	ourShader.setFloat("material.shininess", 32.0f);
+	ourShader.setFloat("material.shininess", 32.0f);*/
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
 
 	// Leg 4
 	//glm::mat4 translateMatrix2, rotateXMatrix2, rotateYMatrix2, rotateZMatrix2, scaleMatrix2, model2;
-	translateMatrix2 = glm::translate(identityMatrix2, glm::vec3(0.43f + little_trans, -0.32f + fixYWhole, 0.28f));
+	translateMatrix2 = glm::translate(identityMatrix2, glm::vec3(0.43f, -0.32f + fixYWhole, 0.28f));
 	scaleMatrix2 = glm::scale(identityMatrix2, glm::vec3(0.07f, 0.7f * fixLeg, 0.07f));
-	model2 = translateMatrix2 * rotateYMatrix * scaleMatrix2;
+	model2 = translateMatrix2 * scaleMatrix2;
 	ourShader.setMat4("model", moveMatrix * model2);
-	ourShader.setVec4("material.ambient", glm::vec4(0.9f, 0.9f, 1.0f, 1.0f));
+	/*ourShader.setVec4("material.ambient", glm::vec4(0.9f, 0.9f, 1.0f, 1.0f));
 	ourShader.setVec4("material.diffuse", glm::vec4(0.9f, 0.9f, 1.0f, 1.0f));
 	ourShader.setVec4("material.specular", glm::vec4(0.5f, 0.5f, 0.5f, 0.5f));
-	ourShader.setFloat("material.shininess", 32.0f);
+	ourShader.setFloat("material.shininess", 32.0f);*/
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
 
 	//Left up 
-	translateMatrix2 = glm::translate(identityMatrix2, glm::vec3(0.17f + little_trans, 0.01f - fixY + fixYWhole, 0.29f));
+	translateMatrix2 = glm::translate(identityMatrix2, glm::vec3(0.17f, 0.01f - fixY + fixYWhole, 0.29f));
 	scaleMatrix2 = glm::scale(identityMatrix2, glm::vec3(0.07f, 0.25f, 0.07f));
-	model2 = translateMatrix2 * rotateYMatrix * scaleMatrix2;
+	model2 = translateMatrix2 * scaleMatrix2;
 	ourShader.setMat4("model", moveMatrix * model2);
 	ourShader.setVec4("material.ambient", glm::vec4(0.9f, 0.9f, 1.0f, 1.0f));
 	ourShader.setVec4("material.diffuse", glm::vec4(0.9f, 0.9f, 1.0f, 1.0f));
@@ -1522,9 +1588,9 @@ void Chair(Shader ourShader, glm::mat4 moveMatrix, float rotation)
 
 
 	//Right up
-	translateMatrix2 = glm::translate(identityMatrix2, glm::vec3(0.39f + little_trans, 0.01f - fixY + fixYWhole, 0.29f));
+	translateMatrix2 = glm::translate(identityMatrix2, glm::vec3(0.39f, 0.01f - fixY + fixYWhole, 0.29f));
 	scaleMatrix2 = glm::scale(identityMatrix2, glm::vec3(0.07f, 0.25f, 0.07f));
-	model2 = translateMatrix2 * rotateYMatrix * scaleMatrix2;
+	model2 = translateMatrix2 * scaleMatrix2;
 	ourShader.setMat4("model", moveMatrix * model2);
 	ourShader.setVec4("material.ambient", glm::vec4(0.9f, 0.9f, 1.0f, 1.0f));
 	ourShader.setVec4("material.diffuse", glm::vec4(0.9f, 0.9f, 1.0f, 1.0f));
@@ -1533,14 +1599,14 @@ void Chair(Shader ourShader, glm::mat4 moveMatrix, float rotation)
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
 	//Back support
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(0.15f + little_trans, 0.09f - fixY + fixYWhole, 0.28f));
+	translateMatrix = glm::translate(identityMatrix, glm::vec3(0.15f, 0.09f - fixY + fixYWhole, 0.28f));
 	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.6f, 0.5f, 0.1f));
-	model = translateMatrix * rotateYMatrix * scaleMatrix;
+	model = translateMatrix * scaleMatrix;
 	ourShader.setMat4("model", moveMatrix * model);
-	ourShader.setVec4("material.ambient", glm::vec4(1.0f, 0.14, 0.0, 1.0f));
-	ourShader.setVec4("material.diffuse", glm::vec4(1.0f, 0.14, 0.0, 1.0f));
-	ourShader.setVec4("material.specular", glm::vec4(0.6f, 0.6f, 0.6f, 0.6f));
-	ourShader.setFloat("material.shininess", 64.0f);
+	ourShader.setVec4("material.ambient", glm::vec4(0.9f, 0.3f, 1.0f, 1.0f));
+	ourShader.setVec4("material.diffuse", glm::vec4(0.9f, 0.3f, 1.0f, 1.0f));
+	ourShader.setVec4("material.specular", glm::vec4(0.5f, 0.5f, 0.5f, 0.5f));
+	ourShader.setFloat("material.shininess", 32.0f);
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 }
 
@@ -1678,7 +1744,7 @@ void processInput(GLFWwindow* window)
 
 	if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)                   //Up
 	{
-		while (dorja1_rotationY <= 120)
+		while (dorja1_rotationY <= 100)
 		{
 			dorja1_rotationY += 24.0f;
 			Sleep(100);

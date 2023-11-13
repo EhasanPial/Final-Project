@@ -718,10 +718,6 @@ int main()
 		translateMatrix = glm::translate(identityMatrix, glm::vec3(0.0, 0.0, 0.0));
 		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		CafeShop(ourShader, translateMatrix, color1);
-
-		translateMatrix = glm::translate(identityMatrix, glm::vec3(9.6, 1.0, -18.7f));
-		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-		RotateChairY(ourShader, translateMatrix, 180);
 		 
 		translate_table = 0;
 		for (int i = 0; i < 2; i++) {
@@ -924,7 +920,7 @@ void CafeShop(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color) {
 
 	 
 	translateMatrix = glm::translate(identityMatrix, glm::vec3(8.0+2.0, 0.5, -20.0f)); // grass 20 e sesh hoiche
-	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.2, 1.0f, 4.0-0.3f));
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.2, 1.0f, 4.0f));
 	model = translateMatrix * scaleMatrix;
 	ourShader.setMat4("model", moveMatrix * model);
 	ourShader.setVec4("material.ambient", color);
@@ -944,14 +940,14 @@ void CafeShop(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color) {
 	ourShader.setVec4("material.diffuse", color);
 	ourShader.setVec4("material.specular", color);
 	ourShader.setFloat("material.shininess", 32.0f);
-	glBindTexture(GL_TEXTURE_2D, woodtex);
+	glBindTexture(GL_TEXTURE_2D, redBrickTex);
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
 
 	 
 	rotateYMatrix = glm::rotate(identityMatrix, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	translateMatrix = glm::translate(identityMatrix, glm::vec3(8.0 - 2.5 / 2 + 1.9, 0.5+0.5, -18.0+0.02f)); // grass 20 e sesh hoiche
-	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.7, 0.05f, 3.0f));
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.5, 0.05f, 3.0f));
 	model = translateMatrix * rotateYMatrix * scaleMatrix;
 	ourShader.setMat4("model", moveMatrix * model);
 	ourShader.setVec4("material.ambient", color);
