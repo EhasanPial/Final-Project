@@ -29,6 +29,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
 
 void Grasses(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color);
+void CoffeMachine(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color);
 void CafeFoodCounter(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color);
 void CafeShop(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color);
 void Baloon(Shader ourShader, Shader sphereShader,  glm::mat4 moveMatrix, glm::vec4 color, float rotation);
@@ -124,7 +125,7 @@ float spotLightOn = 0.0;
 
 
 // Textures
-unsigned int texture0, texture1, redBrickTex, texture3, texture4, tilesTex, texture6, texture7, woodtex, glasstex, tabletex, marbeltex;
+unsigned int texture0, texture1, redBrickTex, texture3, texture4, tilesTex, texture6, texture7, woodtex, glasstex, tabletex, marbeltex, coffeetex;
 CurveObj co1;
 
 int main()
@@ -371,8 +372,8 @@ int main()
 	load_texture(marbeltex, "marble.jpg", GL_RGB);
 	load_texture(tilesTex, "tiles.jpg", GL_RGB);
 	load_texture(glasstex, "glass.jpg", GL_RGB);
-	load_texture(tabletex, "table.jpg", GL_RGB);
-
+	load_texture(tabletex, "table.jpg", GL_RGB); 
+	load_texture(coffeetex, "green-coffee.jpg", GL_RGB);
 
 	float testBallon = 0.0; 
 
@@ -719,9 +720,13 @@ int main()
 		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		CafeShop(ourShader, translateMatrix, color1);
 
-		translateMatrix = glm::translate(identityMatrix, glm::vec3(14, 0.5, -10.0f));
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(9.6, 1.0, -18.7f));
 		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		RotateChairY(ourShader, translateMatrix, 180);
+		
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(4.0, 0.0, 0.0));
+		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		CoffeMachine(ourShader, translateMatrix, color1);
 		 
 		translate_table = 0;
 		for (int i = 0; i < 2; i++) {
@@ -752,8 +757,6 @@ int main()
 
 
 		}
-		
-		
 		 
 
 	 
@@ -907,6 +910,60 @@ void Grasses(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color)
 
 
 }
+void CoffeMachine(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color) {
+
+
+	// left 
+	glm::mat4 identityMatrix = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+	glm::mat4 translateMatrix, scaleMatrix, model;
+	translateMatrix = glm::translate(identityMatrix, glm::vec3(0.0f, 1 + 0.05, -18.0f)); // grass 20 e sesh hoiche
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.01, 1.0f, 1));
+	model = translateMatrix * scaleMatrix;
+	ourShader.setMat4("model", moveMatrix * model);
+	ourShader.setVec4("material.ambient", color);
+	ourShader.setVec4("material.diffuse", color);
+	ourShader.setVec4("material.specular", color);
+	ourShader.setFloat("material.shininess", 32.0f);
+	glBindTexture(GL_TEXTURE_2D, coffeetex);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+	//main part 
+
+	translateMatrix = glm::translate(identityMatrix, glm::vec3(0.0f , 1 + 0.05+0.75/2/2, -18.0f)); // grass 20 e sesh hoiche
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.6, 0.75, 1));
+	model = translateMatrix * scaleMatrix;
+	ourShader.setMat4("model", moveMatrix * model);
+	ourShader.setVec4("material.ambient", color);
+	ourShader.setVec4("material.diffuse", color);
+	ourShader.setVec4("material.specular", color);
+	ourShader.setFloat("material.shininess", 32.0f);
+	glBindTexture(GL_TEXTURE_2D, coffeetex);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+	// nozzle 
+	translateMatrix = glm::translate(identityMatrix, glm::vec3(0.0f + 0.15,  1.0f + 0.2  , -17.59f)); // grass 20 e sesh hoiche
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.01, 0.2, 0.01));
+	model = translateMatrix * scaleMatrix;
+	ourShader.setMat4("model", moveMatrix * model);
+	ourShader.setVec4("material.ambient", color);
+	ourShader.setVec4("material.diffuse", color);
+	ourShader.setVec4("material.specular", color);
+	ourShader.setFloat("material.shininess", 32.0f);
+	glBindTexture(GL_TEXTURE_2D, coffeetex);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+
+	//right thin
+	translateMatrix = glm::translate(identityMatrix, glm::vec3(.3f-0.01/2/2, 1 + 0.05, -18.0f)); // grass 20 e sesh hoiche
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.01, 1.0f, 1));
+	model = translateMatrix * scaleMatrix;
+	ourShader.setMat4("model", moveMatrix * model);
+	ourShader.setVec4("material.ambient", color);
+	ourShader.setVec4("material.diffuse", color);
+	ourShader.setVec4("material.specular", color);
+	ourShader.setFloat("material.shininess", 32.0f);
+	glBindTexture(GL_TEXTURE_2D, coffeetex);
+	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+}
 void CafeShop(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color) {
 
 	glm::mat4 identityMatrix = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
@@ -996,7 +1053,7 @@ void CafeFoodCounter(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color) {
 	glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
 	
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(0.0f, 1, -20.0f)); // grass 20 e sesh hoiche
+	translateMatrix = glm::translate(identityMatrix, glm::vec3(0.0f, 1, -20.0f));  
 	scaleMatrix = glm::scale(identityMatrix, glm::vec3(2.2, 0.1f, 34.0f));
 	model = translateMatrix  * scaleMatrix;
 	ourShader.setMat4("model", moveMatrix * model);
