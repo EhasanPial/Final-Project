@@ -40,17 +40,47 @@ public:
 
     void setUpLight(Shader& lightingShader)
     {
+
         lightingShader.use();
-        lightingShader.setVec3("spotLight.ambient", ambient * ambientOn * isOn);
-        lightingShader.setVec3("spotLight.diffuse", diffuse * diffuseOn * isOn);
-        lightingShader.setVec3("spotLight.specular", specular * specularOn * isOn);
-        lightingShader.setVec3("spotLight.position", position);
-        lightingShader.setVec3("spotLight.direction", direction);
-        lightingShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(cutOff)));
-        lightingShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(outerCutOff)));
-        lightingShader.setFloat("spotLight.k_c", k_c);
-        lightingShader.setFloat("spotLight.k_l", k_l);
-        lightingShader.setFloat("spotLight.k_q", k_q);
+        if (lightNumber == 1) {
+            lightingShader.setVec3("spotLight[0].ambient", ambient * ambientOn * isOn);
+            lightingShader.setVec3("spotLight[0].diffuse", diffuse * diffuseOn * isOn);
+            lightingShader.setVec3("spotLight[0].specular", specular * specularOn * isOn);
+            lightingShader.setVec3("spotLight[0].position", position);
+            lightingShader.setVec3("spotLight[0].direction", direction);
+            lightingShader.setFloat("spotLight[0].cutOff", glm::cos(glm::radians(cutOff)));
+            lightingShader.setFloat("spotLight[0].outerCutOff", glm::cos(glm::radians(outerCutOff)));
+            lightingShader.setFloat("spotLight[0].k_c", k_c);
+            lightingShader.setFloat("spotLight[0].k_l", k_l);
+            lightingShader.setFloat("spotLight[0].k_q", k_q);
+        }
+        else if (lightNumber == 2) {
+            			lightingShader.setVec3("spotLight[1].ambient", ambient * ambientOn * isOn);
+			lightingShader.setVec3("spotLight[1].diffuse", diffuse * diffuseOn * isOn);
+			lightingShader.setVec3("spotLight[1].specular", specular * specularOn * isOn);
+			lightingShader.setVec3("spotLight[1].position", position);
+			lightingShader.setVec3("spotLight[1].direction", direction);
+			lightingShader.setFloat("spotLight[1].cutOff", glm::cos(glm::radians(cutOff)));
+			lightingShader.setFloat("spotLight[1].outerCutOff", glm::cos(glm::radians(outerCutOff)));
+			lightingShader.setFloat("spotLight[1].k_c", k_c);
+			lightingShader.setFloat("spotLight[1].k_l", k_l);
+			lightingShader.setFloat("spotLight[1].k_q", k_q);
+        }
+        else {
+
+            		lightingShader.setVec3("spotLight[2].ambient", ambient * ambientOn * isOn);
+                    lightingShader.setVec3("spotLight[2].diffuse", diffuse * diffuseOn * isOn);
+                    lightingShader.setVec3("spotLight[2].specular", specular * specularOn * isOn);
+                    lightingShader.setVec3("spotLight[2].position", position);
+                    lightingShader.setVec3("spotLight[2].direction", direction);
+                    lightingShader.setFloat("spotLight[2].cutOff", glm::cos(glm::radians(cutOff)));
+                    lightingShader.setFloat("spotLight[2].outerCutOff", glm::cos(glm::radians(outerCutOff)));
+                    lightingShader.setFloat("spotLight[2].k_c", k_c);
+                    lightingShader.setFloat("spotLight[2].k_l", k_l);
+                    lightingShader.setFloat("spotLight[2].k_q", k_q);
+
+        }
+        
     }
 
     void turnOff()

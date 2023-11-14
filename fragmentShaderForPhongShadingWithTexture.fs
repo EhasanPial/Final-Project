@@ -45,13 +45,15 @@ struct SpotLight {                    //Spot Light
 
 #define NR_POINT_LIGHTS 5
 
+#define NR_SPOT_LIGHTS 3
+
 in vec3 FragPos;
 in vec3 Normal;
 in vec2 TexCoords;
 
 //uniform PointLight pointLight;
 uniform DirectionalLight directionalLight;
-uniform SpotLight spotLight;
+uniform SpotLight spotLight[NR_SPOT_LIGHTS];
 
 uniform vec3 viewPos;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
@@ -85,8 +87,10 @@ void main()
     vec3 dirL = CalcDirLight(material, directionalLight, N, FragPos, V);
     
     // Spot light
-    vec3 spotL = CalcSpotLight(material, spotLight, N, FragPos, V);
+    vec3 spotL;
 
+    for(int i = 0; i < NR_SPOT_LIGHTS; i++)
+        spotL += CalcSpotLight(material, spotLight[i], N, FragPos, V) ;
     // All results
     vec3 result = pointL + dirL + spotL;
 
