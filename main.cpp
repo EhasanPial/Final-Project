@@ -27,7 +27,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow* window);
-
+void shiri(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, Cube all_cubes[], int steps);
 void Grasses(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, Cube all_cubes[]);
 void CoffeMachine(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, Cube all_cubes[]);
 void CafeFoodCounter(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, Cube all_cubes[]);
@@ -69,6 +69,11 @@ float rotateAngleTest_Y = 0.0;
 float globalBallonRotation = 0.0f;
 float globalBallonStep = 3.0f;
 bool isglobalBallonOn = 1.0f;
+
+ 
+float globalDotStep = 0.01;
+bool isglobalDotOn = 1.0f;
+
 // camera               8.0   1.0   18.1
 Camera camera(glm::vec3(8.0f, 1.0f, 18.1f));
 float lastX = SCR_WIDTH / 2.0f;
@@ -90,7 +95,7 @@ glm::vec3 lightPositions[] = {
 		glm::vec3(-8.0f, 8.0f, 8.0f),
 		glm::vec3(-8.0f, 8.0f, -8.0f),
 		glm::vec3(8.0f, 8.0f, -8.0f),
-		glm::vec3(15.0, 10.0f, 15.0f),
+		glm::vec3(30.0, 10.0f, 15.0f),
 		glm::vec3(-2.3f, .5f, 4.8f) ,
 
 		glm::vec3(4.30f, 3.0, -5.0f) ,//spotlight1
@@ -179,7 +184,7 @@ DirectionalLight directionalLight(
 
 	-lightPositions[4].x, -lightPositions[4].y, -lightPositions[4].z,  // direction
 	0.4f, 0.4f, 0.4f,     // ambient
-	0.9f, 0.9f, 0.9f,     // diffuse
+	0.4f, 0.4f, 0.4f,     // diffuse
 	.2f, .2f, 0.2f,        // specular
 	1           // light number
 );
@@ -465,6 +470,7 @@ int main()
 
 
 	float testBallon = 0.0;
+	float testDot = 0.0;
 
 	string diffuseMapPath;
 	string specularMapPath = "";
@@ -739,7 +745,7 @@ int main()
 		batirNiche1.scale = glm::vec3(0.2f, .2f, 0.2f);
 		batirNiche1.hollowBezier(reverseCurve, (sizeof(reverseCurve) / sizeof(reverseCurve[0])) / 3 - 1, lightingShader);
 		
-		translateMatrix = glm::translate(identityMatrix, glm::vec3(4.2, 1.1, -10.0));
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(4.2, 1.0+0.06, -10.0));
 		SquareBati(lightingShaderWithTexture, translateMatrix, color1, all_cubes);
 
 		lightingShader.use();
@@ -752,7 +758,15 @@ int main()
 		co3.hollowBezier(points, (sizeof(points) / sizeof(points[0])) / 3 - 1, lightingShader);
 
 
-		translateMatrix = glm::translate(identityMatrix, glm::vec3(4.0 + 0.75, 1.19 , -19.6));
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(4.0 + 0.75, 1.19 - globalDotStep, -19.6));
+		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		dotdot(lightingShader, translateMatrix, color1, all_cubes);
+
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(4.0 + 0.75, 1.19- 0.02 - globalDotStep, -19.6));
+		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		dotdot(lightingShader, translateMatrix, color1, all_cubes);
+
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(4.0 + 0.75, 1.19 - 0.03 - globalDotStep, -19.6));
 		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		dotdot(lightingShader, translateMatrix, color1, all_cubes);
 		 
@@ -1040,18 +1054,31 @@ int main()
 		if (isglobalBallonOn) {
 
 			if (globalBallonRotation <= 15 && testBallon != 0.0) {
-				globalBallonRotation += 0.1f;
+				globalBallonRotation += 0.4f;
 				if (globalBallonRotation >= 15) {
 					testBallon = 0.0;
 				}
 			}
 			else {
-				globalBallonRotation -= 0.1f;
+				globalBallonRotation -= 0.4f;
 				if (globalBallonRotation < -15) {
 					testBallon = 1.0;
 				}
 			}
 
+
+
+		}
+
+
+		if (isglobalDotOn) {
+
+			globalDotStep += 0.003;
+
+			if (globalDotStep > 0.01 * 5 )
+			{
+				globalDotStep = 0.0; 
+			}
 
 
 		}
@@ -1131,8 +1158,13 @@ int main()
 			spotLightDz += 2.0;
 		}
 
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(23.0,.40, 1.5f)); 
+		shiri(lightingShaderWithTexture, translateMatrix, color1, all_cubes, 20 );
 
 
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(1.0,1.0,10.0));
+		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		Chair(lightingShaderWithTexture, translateMatrix, 0.0, all_cubes);
 
 
 
@@ -1165,10 +1197,33 @@ void dotdot(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, Cube all_cu
 	translateMatrix = glm::translate(identityMatrix, glm::vec3(0.0, 0.0, 0.0 ));
 	scaleMatrix = glm::scale(identityMatrix, glm::vec3(.02, 0.02, .02));
 	model = translateMatrix * scaleMatrix;
-	all_cubes[7].drawCubeWithTexture(ourShader, moveMatrix* model);
+	all_cubes[3].drawCubeWithTexture(ourShader, moveMatrix* model);
 }
 
+void shiri(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, Cube all_cubes[], int steps = 5) {
+	// shamner block er shirir 1 
+	glm::mat4 identityMatrix = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+	glm::mat4 translateMatrix, scaleMatrix, model, rotateXMatrix, translateToPivot, translateFromPivot;
 
+ 
+	float dy = 0.0; 
+	float dz = 0.5;
+	for (int i = 0; i < steps ; i++) {
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(15.0 - 7.5, 0.0 + dy, 0.0f-dz)); // (0,0,0) ekahnei
+		scaleMatrix = glm::scale(identityMatrix, glm::vec3(3.0f, 0.5f, 1.0f));
+		model = translateMatrix * scaleMatrix;
+		all_cubes[3].drawCubeWithTexture(ourShader, moveMatrix * model);
+
+		// shamner block er shirir 2
+
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(15.0 - 7.5, 0.165f + dy, 0.0f-dz)); // (0,0,0) ekahnei , 7.5 hocche 30*0.5 = 15 jeta shirir er X, er half 
+		scaleMatrix = glm::scale(identityMatrix, glm::vec3(3.0f, 0.5f, 0.4f));
+		model = translateMatrix * scaleMatrix;
+		all_cubes[6].drawCubeWithTexture(ourShader, moveMatrix * model);
+		dy += 0.165;
+		dz += 0.5;
+	}
+}
 void Baloon(Shader ourShader, Shader sphereShader, glm::mat4 moveMatrix, glm::vec3 rotationAxis, glm::vec3 ambient, glm::vec4 color, float rotation, Cube all_cubes[])
 {
 	glm::mat4 identityMatrix = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
@@ -1227,7 +1282,7 @@ void Grasses(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, Cube all_c
 
 	//Grass
 	translateMatrix = glm::translate(identityMatrix, glm::vec3(0.0f, 0.0, 0.0f));
-	scaleMatrix = glm::scale(identityMatrix, glm::vec3(60.0f, 0.1f, 20.0f));
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(66.0f, 0.1f, 20.0f));
 	model = translateMatrix * scaleMatrix;
 	all_cubes[0].drawCubeWithTexture(ourShader, moveMatrix * model);
 
@@ -1478,7 +1533,7 @@ void Floor(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, Cube cube_ti
 	//shamner block
 	//glBindTexture(GL_TEXTURE_2D, tilesTex);
 	translateMatrix = glm::translate(identityMatrix, glm::vec3(0.0f, 0.0, -20.0f)); // grass 20 e sesh hoiche
-	scaleMatrix = glm::scale(identityMatrix, glm::vec3(60.0f, 1.0f, 40.0f));
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(63.0f, 1.0f, 40.0f));
 	model = translateMatrix * scaleMatrix;
 	cube_tiles[6].drawCubeWithTexture(ourShader, model);
 
@@ -1496,7 +1551,7 @@ void Floor(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, Cube cube_ti
 	translateMatrix = glm::translate(identityMatrix, glm::vec3(15.0 - 7.5, 0.165f, 0.0f)); // (0,0,0) ekahnei , 7.5 hocche 30*0.5 = 15 jeta shirir er X, er half 
 	scaleMatrix = glm::scale(identityMatrix, glm::vec3(30.0f, 0.33f, 0.4f));
 	model = translateMatrix * scaleMatrix;
-	cube_tiles[9].drawCubeWithTexture(ourShader, model);
+	cube_tiles[3].drawCubeWithTexture(ourShader, model);
 
 
 
@@ -1535,7 +1590,7 @@ void Floor(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, Cube cube_ti
 
 	//ceiling 1st floor
 	translateMatrix = glm::translate(identityMatrix, glm::vec3(-0.0f, 5.0 - 1.5, -0.2f));
-	scaleMatrix = glm::scale(identityMatrix, glm::vec3(60.0f, 1.0f, -40.0f));
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(61.0f, 1.0f, -40.0f));
 	model = translateMatrix * scaleMatrix;
 	cube_tiles[4].drawCubeWithTexture(ourShader, model);
 
@@ -1946,22 +2001,28 @@ void Chair(Shader ourShader, glm::mat4 moveMatrix, float rotation, Cube all_cube
 
 	//Left up 
 	translateMatrix2 = glm::translate(identityMatrix2, glm::vec3(0.17f, 0.01f - fixY + fixYWhole, 0.29f));
-	scaleMatrix2 = glm::scale(identityMatrix2, glm::vec3(0.07f, 0.25f, 0.07f));
+	scaleMatrix2 = glm::scale(identityMatrix2, glm::vec3(0.07f, 0.25f + 0.28, 0.07f));
 	model2 = translateMatrix2 * scaleMatrix2;
 	all_cubes[9].drawCubeWithTexture(ourShader, moveMatrix * model2);
 
 
 	//Right up
 	translateMatrix2 = glm::translate(identityMatrix2, glm::vec3(0.39f, 0.01f - fixY + fixYWhole, 0.29f));
-	scaleMatrix2 = glm::scale(identityMatrix2, glm::vec3(0.07f, 0.25f, 0.07f));
+	scaleMatrix2 = glm::scale(identityMatrix2, glm::vec3(0.07f, 0.25f +0.28, 0.07f));
 	model2 = translateMatrix2 * scaleMatrix2;
 	all_cubes[9].drawCubeWithTexture(ourShader, moveMatrix * model2);
 
 	//Back support
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(0.15f, 0.09f - fixY + fixYWhole, 0.28f));
-	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.6f, 0.5f, 0.1f));
+	translateMatrix = glm::translate(identityMatrix, glm::vec3(0.15f + 0.0150, 0.09f - fixY + fixYWhole  +0.1, 0.28f + 0.0135));
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.5f, 0.1f, 0.03f));
 	model = translateMatrix * scaleMatrix;
 	all_cubes[2].drawCubeWithTexture(ourShader, moveMatrix * model);
+
+	//Back support
+	translateMatrix = glm::translate(identityMatrix, glm::vec3(0.15f + 0.0150, 0.09f - fixY + fixYWhole, 0.28f + 0.0135));
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(0.5f, 0.08f, 0.03f));
+	model = translateMatrix * scaleMatrix;
+	all_cubes[7].drawCubeWithTexture(ourShader, moveMatrix * model);
 }
 
 
@@ -2133,6 +2194,15 @@ void processInput(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_RIGHT_BRACKET) == GLFW_PRESS)                   //Up
 	{
 		isglobalBallonOn ^= true;
+
+
+
+		Sleep(100);
+	}
+
+	if (glfwGetKey(window, GLFW_KEY_SEMICOLON) == GLFW_PRESS)                   //Up
+	{
+		isglobalDotOn ^= true;
 
 
 
