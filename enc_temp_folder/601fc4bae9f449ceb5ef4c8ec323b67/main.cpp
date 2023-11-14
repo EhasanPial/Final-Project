@@ -32,11 +32,12 @@ void Grasses(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, Cube all_c
 void CoffeMachine(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, Cube all_cubes[]);
 void CafeFoodCounter(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, Cube all_cubes[]);
 void CafeShop(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, Cube all_cubes[]);
-void Baloon(Shader ourShader, Shader sphereShader, glm::mat4 moveMatrix, glm::vec4 color, float rotation, Cube cube[]);
+void Baloon(Shader ourShader, Shader sphereShader, glm::mat4 moveMatrix, glm::vec3 rotationAxis, glm::vec3 ambient, glm::vec4 color, float rotation, Cube cube[]);
 
 void drawCube(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, float spec, float shininess);
 
 void Floor(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, Cube all_cubes[]);
+void SecondFloorShamne(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, Cube all_cubes[]);
 void ChotoBlocks(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, Cube all_cubes[]);
 
 void Pillars(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, Cube cube[]);
@@ -84,7 +85,7 @@ float lastFrame = 0.0f;
 
 
 glm::vec3 lightPositions[] = {
-		glm::vec3(8.0f, 8.0f, 8.0f),
+		glm::vec3(8.0f, 3.5f - .72, -4.0f),
 		glm::vec3(-8.0f, 8.0f, 8.0f),
 		glm::vec3(-8.0f, 8.0f, -8.0f),
 		glm::vec3(8.0f, 8.0f, -8.0f),
@@ -93,13 +94,13 @@ glm::vec3 lightPositions[] = {
 };
 
 glm::vec3 lightDirections[] = {
-	glm::vec3(0.4f, -0.2f, -1.0f)
+	glm::vec3(0.4f, -0.2f, 1.0f)
 };
 
 
 PointLight pointLight0(
 
-	lightPositions[0].x, lightPositions[0].y,lightPositions[0].z,  // position
+	lightPositions[0].x, lightPositions[0].y, lightPositions[0].z,  // position
 	0.05f, 0.05f, 0.05f,     // ambient
 	0.8f, 0.8f, 0.8f,     // diffuse
 	1.0f, 1.0f, 1.0f,        // specular
@@ -174,7 +175,7 @@ DirectionalLight directionalLight(
 	-lightPositions[4].x, -lightPositions[4].y, -lightPositions[4].z,  // direction
 	0.4f, 0.4f, 0.4f,     // ambient
 	0.9f, 0.9f, 0.9f,     // diffuse
-	.2f, .2f,0.2f,        // specular
+	.2f, .2f, 0.2f,        // specular
 	1           // light number
 );
 
@@ -354,6 +355,27 @@ int main()
 -1.0250, .50, 5.1000,
 0.0000, .50, 5.10
 	};
+
+	GLfloat blank[] = {
+0.1,0.1,0.1
+	};
+
+	GLfloat batirUpor[]{
+		-0.9375, 1.5381, 5.1000,
+			-0.9000, 1.5320, 5.1000,
+			-0.8729, 1.5260, 5.1000,
+			-0.8437, 1.5260, 5.1000,
+			-0.7729, 1.5320, 5.1000,
+			-0.7417, 1.5351, 5.1000,
+			-0.6812, 1.5442, 5.1000,
+			-0.6271, 1.5473, 5.1000,
+			-0.5604, 1.5746, 5.1000,
+			-0.5104, 1.5959, 5.1000,
+			-0.4792, 1.6385, 5.1000,
+			-0.4625, 1.6751, 5.1000,
+			-0.3083, 1.5077, 5.1000,
+			-0.1639, 4.1502, 3.2825,
+	};
 	unsigned int cubeVAO, cubeVBO, cubeEBO;
 	glGenVertexArrays(1, &cubeVAO);
 	glGenBuffers(1, &cubeVBO);
@@ -426,16 +448,6 @@ int main()
 	stbi_image_free(data);
 
 
-	/*load_texture(texture1, "new_grass.jpg", GL_RGB);
-	load_texture(woodtex, "wood.jpg", GL_RGB);
-	load_texture(redBrickTex, "brickwall_2.jpg", GL_RGB);
-	load_texture(texture3, "brickwall_2.jpg", GL_RGB);
-	load_texture(texture4, "pillar.jpg", GL_RGB);
-	load_texture(marbeltex, "marble.jpg", GL_RGB);
-	load_texture(tilesTex, "tiles.jpg", GL_RGB);
-	load_texture(glasstex, "glass.jpg", GL_RGB);
-	load_texture(tabletex, "table.jpg", GL_RGB);
-	load_texture(coffeetex, "green-coffee.jpg", GL_RGB);*/
 
 	float testBallon = 0.0;
 
@@ -536,15 +548,16 @@ int main()
 
 
 		// light shader
-		pointLight1.setUpPointLight(lightingShaderWithTexture);
-		pointLight2.setUpPointLight(lightingShaderWithTexture);
-		pointLight3.setUpPointLight(lightingShaderWithTexture);
+		pointLight1.setUpPointLight(lightingShader);
+		pointLight2.setUpPointLight(lightingShader);
+		pointLight3.setUpPointLight(lightingShader);
 		pointLight4.setUpPointLight(lightingShaderWithTexture);
 		pointLight5.setUpPointLight(lightingShaderWithTexture);
 		directionalLight.setUpLight(lightingShaderWithTexture);
 		spotLight.setUpLight(lightingShaderWithTexture);
 
 		lightingShader.use();
+
 		pointLight0.setUpPointLight(lightingShader);
 		directionalLight2.setUpLight(lightingShader);
 		spotLight2.setUpLight(lightingShader);
@@ -663,9 +676,14 @@ int main()
 
 		lightingShader.use();
 		CurveObj co1;
-		co1.translation = glm::vec3(0.0f, 1.0f, 0.0f);
-		co1.scale = glm::vec3(0.2f, 0.3f, 0.2f);
+		co1.ambient = glm::vec4(0.32, 0.5, 0.8, 1.0);
+		co1.diffuse = glm::vec4(0.32, 0.21, 0.05, 1.0);
+		co1.specular = glm::vec4(0.0, 0.21, 0.05, 1.0);
+		co1.translation = glm::vec3(4.2, 0.81, -4.0);
+		co1.scale = glm::vec3(0.2f, .5f, 0.2f);
 		co1.hollowBezier(points, (sizeof(points) / sizeof(points[0])) / 3 - 1, lightingShader);
+
+
 
 
 
@@ -690,6 +708,14 @@ int main()
 		translateMatrix = glm::translate(identityMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
 		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
 		Floor(lightingShaderWithTexture, translateMatrix, color1, all_cubes);
+
+
+		float dy = 5.0 - 1.5;
+		float dz = -7.3f;
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(-0.5f,3.6, 0.0f+dz));
+		color1 = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+		SecondFloorShamne(lightingShaderWithTexture, translateMatrix, color1, all_cubes);
+
 
 		//Pillars
 		translateMatrix = glm::translate(identityMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
@@ -938,7 +964,7 @@ int main()
 
 
 		}
-		 
+
 
 		if (isglobalBallonOn) {
 
@@ -959,26 +985,56 @@ int main()
 
 		}
 
-		/*float translate_ballon = 0.0;
+		float translate_ballon = 0.0;
 		for (int i = 0; i < 4; i++) {
-			translateMatrix = glm::translate(identityMatrix, glm::vec3(5.0f + translate_ballon, 2.5, -10));
-			Baloon(lightingShaderWithTexture, translateMatrix, color1, globalBallonRotation);
+			CurveObj co;
+			co.ambient = glm::vec4(0.6f, 0.9f, 0.6f, 1.0);
+
+			co.hollowBezier(blank, (sizeof(blank) / sizeof(blank[0])) / 3 - 1, lightingShader);
+			glm::vec3 ambient1 = glm::vec3(0.0f, 0.9f, 0.0f);
+			glm::vec3 rotationAxis = glm::vec3(1.0f, 0.0f, 0.0f);
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(5.5f + translate_ballon, 2.5, -10));
+			Baloon(lightingShaderWithTexture, lightingShader, translateMatrix, rotationAxis, ambient1, color1, globalBallonRotation, all_cubes);
 			translate_ballon += 7.0;
-		}*/
+		}
+
+		lightingShader.use();
+		translate_ballon = 0.0;
+		for (int i = 0; i < 4; i++) {
+			CurveObj co;
+			co.ambient = glm::vec4(0.4f, 0.6f, 0.9f, 1.0);
+
+			co.hollowBezier(blank, (sizeof(blank) / sizeof(blank[0])) / 3 - 1, lightingShader);
+			glm::vec3 ambient1 = glm::vec3(0.0f, 0.9f, 0.0f); 			glm::vec3 rotationAxis = glm::vec3(0.0f, 0.0f, 1.0f);
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(5.5f + translate_ballon, 2.5, -13));
+			Baloon(lightingShaderWithTexture, lightingShader, translateMatrix, rotationAxis, ambient1, color1, globalBallonRotation, all_cubes);
+			translate_ballon += 7.0;
+		}
+		translate_ballon = 0.0;
+		for (int i = 0; i < 4; i++) {
+			CurveObj co;
+			co.ambient = glm::vec4(0.8f, 0.4f, 0.1f, 1.0);
+
+			co.hollowBezier(blank, (sizeof(blank) / sizeof(blank[0])) / 3 - 1, lightingShader);
+			glm::vec3 ambient1 = glm::vec3(0.0f, 0.9f, 0.0f);
+			glm::vec3 rotationAxis = glm::vec3(1.0f, 0.0f, 0.0f);
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(5.5f + translate_ballon, 2.5, -16));
+			Baloon(lightingShaderWithTexture, lightingShader, translateMatrix, rotationAxis, ambient1, color1, globalBallonRotation, all_cubes);
+			translate_ballon += 7.0;
+		}
 
 
 
-		translateMatrix = glm::translate(identityMatrix, glm::vec3(5.0f, 2.5, -10));
-		Baloon(lightingShaderWithTexture, lightingShader, translateMatrix, color1, globalBallonRotation, all_cubes);
+		// point lights 
 
-
-		translateMatrix = glm::translate(identityMatrix, glm::vec3(5.0f + 7.0, 2.5, -10));
-		Baloon(lightingShaderWithTexture, lightingShader, translateMatrix, color1, globalBallonRotation, all_cubes);
-
-		translateMatrix = glm::translate(identityMatrix, glm::vec3(5.0f + 14.0, 2.5, -10));
-		Baloon(lightingShaderWithTexture, lightingShader
-			, translateMatrix, color1, globalBallonRotation, all_cubes);
-
+		  // make sure to initialize matrix to identity matrix first
+		glm::mat4 model;
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, lightPositions[0]);
+		model = glm::scale(model, glm::vec3(0.2f));
+		lightingShader.setMat4("model", model);
+		lightingShader.setVec3("color", glm::vec3(0.8f, 0.8f, 0.8f));
+		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
 
 
@@ -1006,7 +1062,7 @@ int main()
 }
 
 
-void Baloon(Shader ourShader, Shader sphereShader, glm::mat4 moveMatrix, glm::vec4 color, float rotation, Cube all_cubes[])
+void Baloon(Shader ourShader, Shader sphereShader, glm::mat4 moveMatrix, glm::vec3 rotationAxis, glm::vec3 ambient, glm::vec4 color, float rotation, Cube all_cubes[])
 {
 	glm::mat4 identityMatrix = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
 	glm::mat4 translateMatrix, scaleMatrix, model, rotateXMatrix, translateToPivot, translateFromPivot;
@@ -1023,22 +1079,23 @@ void Baloon(Shader ourShader, Shader sphereShader, glm::mat4 moveMatrix, glm::ve
 	translateToPivot = glm::translate(identityMatrix, -pivot1);
 	translateFromPivot = glm::translate(identityMatrix, pivot1);
 
-	rotateXMatrix = glm::rotate(identityMatrix, glm::radians(rotation), glm::vec3(1.0f, 0.0f, 0.0f));
+	rotateXMatrix = glm::rotate(identityMatrix, glm::radians(rotation), glm::vec3(rotationAxis));
 	translateMatrix = glm::translate(identityMatrix, glm::vec3(0.0, -0.01f, 0.0));
 	scaleMatrix = glm::scale(identityMatrix, glm::vec3(.02, 2.0f, .02));
 	model = translateFromPivot * rotateXMatrix * translateToPivot * translateMatrix * scaleMatrix;
 	all_cubes[3].drawCubeWithTexture(ourShader, moveMatrix * model);
 
 	Sphere s1 = Sphere();
-
+	sphereShader.use();
+	s1.ambient = ambient;
+	s1.diffuse = ambient;
+	s1.specular = glm::vec3(.1f, .1f, .1f);
+	s1.scale = glm::vec3(.1f, 0.1f, 0.1f);
 	s1.drawSphere(sphereShader, moveMatrix, pivot1, translateMatrix,
 		translateToPivot, translateFromPivot, rotateXMatrix);
-	s1.ambient = glm::vec4(1.0f, 0.0f, 0.0f, .5f);
-	s1.diffuse = glm::vec4(1.0f, 0.0f, 0.0f, .5f);
-	s1.specular = glm::vec4(1.0f, 1.0f, 1.0f, .5f);
-	s1.scale = glm::vec3(.1f, 0.1f, 0.1f);
 
-	ourShader.use();
+
+	//ourShader.use();
 
 }
 float  gateAngle = 0;
@@ -1160,6 +1217,129 @@ void CafeFoodCounter(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, Cu
 	all_cubes[3].drawCubeWithTexture(ourShader, moveMatrix * model);
 
 }
+void SecondFloorShamne(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, Cube cube_tiles[]) {
+
+	glm::mat4 identityMatrix = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
+	glm::mat4 translateMatrix, scaleMatrix, model;
+	float dy = 5.0 - 1.5;
+	float dz = -10.3f;
+
+	//dorja er left pillar
+	translateMatrix = glm::translate(identityMatrix, glm::vec3(5.0f-4.5, 0.0, -3.0f));
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(10.5f, 5.8+7, 1.4f));
+	model = translateMatrix * scaleMatrix;
+	cube_tiles[4].drawCubeWithTexture(ourShader, moveMatrix* model);
+
+	//dorja er left pillar strip
+	translateMatrix = glm::translate(identityMatrix, glm::vec3(5.75f, 0.35f, -3.0f));
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(.2f, 5.8+7, .4f));
+	model = translateMatrix * scaleMatrix;
+	cube_tiles[9].drawCubeWithTexture(ourShader, moveMatrix* model);
+
+	//dorja
+	glm::mat4 rotateYMatrix;
+	rotateYMatrix = glm::rotate(identityMatrix, glm::radians(dorja1_rotationY), glm::vec3(0.0f, 1.0f, 0.0f));
+	translateMatrix = glm::translate(identityMatrix, glm::vec3(5.86f, 0.35f, -3.0f));
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(3.2f, 5.1+8, .2f));
+	model = translateMatrix * rotateYMatrix * scaleMatrix;
+	cube_tiles[7].drawCubeWithTexture(ourShader, moveMatrix* model);
+
+	//dorja er uporer strip
+	translateMatrix = glm::translate(identityMatrix, glm::vec3(5.0f, 2.75f, -3.0f));
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(6.5, 1.8+8, .4));
+	model = translateMatrix * scaleMatrix;
+	cube_tiles[9].drawCubeWithTexture(ourShader, moveMatrix* model);
+
+	//dorja er right pillar strip
+	translateMatrix = glm::translate(identityMatrix, glm::vec3(7.5f - 0.1, 0.35f, -3.0f));
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(.2f, 5.8+8, .4f));
+	model = translateMatrix * scaleMatrix;
+	cube_tiles[9].drawCubeWithTexture(ourShader, moveMatrix* model);
+
+	//dorja er right pillar
+	translateMatrix = glm::translate(identityMatrix, glm::vec3(7.5f, 0.0, -3.0f));
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(1.5f, 5.8+8, 1.4f));
+	model = translateMatrix * scaleMatrix;
+	cube_tiles[4].drawCubeWithTexture(ourShader, moveMatrix* model);
+
+	//dorja er uporer strip
+	translateMatrix = glm::translate(identityMatrix, glm::vec3(7.5f + 0.75f, 2.75f, -3.0f));
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(43.5, 1.8+8, .4));
+	model = translateMatrix * scaleMatrix;
+	cube_tiles[4].drawCubeWithTexture(ourShader, moveMatrix* model);
+
+
+	float dx = 8.25f;
+	float dx_window = 7.5 + 0.75f;
+	//dorja er right pillar 2 
+	for (int i = 0; i < 4; i++) {
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(dx - 0.5, 0.0, -3.0f));
+		scaleMatrix = glm::scale(identityMatrix, glm::vec3(1.5f, 5.8+8, 1.4f));
+		model = translateMatrix * scaleMatrix;
+		cube_tiles[9].drawCubeWithTexture(ourShader, moveMatrix* model);
+
+
+
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(dx + 1.875, 0.0, -3.0f));
+		scaleMatrix = glm::scale(identityMatrix, glm::vec3(4.5, 7.5+8, 0.4f));
+		model = translateMatrix * scaleMatrix;
+		cube_tiles[4].drawCubeWithTexture(ourShader, moveMatrix* model);
+
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(dx, 0.0, -3.0f));
+		scaleMatrix = glm::scale(identityMatrix, glm::vec3(3.75, 2+8, 0.4f));
+		model = translateMatrix * scaleMatrix;
+		cube_tiles[9].drawCubeWithTexture(ourShader, moveMatrix* model);
+
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(dx, 2.5, -3.0f));
+		scaleMatrix = glm::scale(identityMatrix, glm::vec3(3.79, 0.5+8, 0.4f));
+		model = translateMatrix * scaleMatrix;
+		cube_tiles[9].drawCubeWithTexture(ourShader, moveMatrix* model);
+
+		//window 
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(dx + .25, 1, -3.0f + 0.05+0.5));
+		scaleMatrix = glm::scale(identityMatrix, glm::vec3(3.25 / 2, 3, 0.05f ));
+		model = translateMatrix * scaleMatrix;
+		cube_tiles[1].drawCubeWithTexture(ourShader, moveMatrix* model);
+
+		//window 
+		translateMatrix = glm::translate(identityMatrix, glm::vec3(dx + .25 + window_translate, 1, -3.0f + 0.1+0.5));
+		scaleMatrix = glm::scale(identityMatrix, glm::vec3(3.25 / 2, 3, 0.05 ));
+		model = translateMatrix * scaleMatrix;
+		cube_tiles[1].drawCubeWithTexture(ourShader, moveMatrix* model);
+
+		if (i != 3) {
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(dx + 4.11, 0.5, -3.0f));
+			scaleMatrix = glm::scale(identityMatrix, glm::vec3(3.79, 1+8, 0.4f));
+			model = translateMatrix * scaleMatrix;
+			cube_tiles[9].drawCubeWithTexture(ourShader, moveMatrix* model);
+
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(dx + 4.11, 2.5, -3.0f));
+			scaleMatrix = glm::scale(identityMatrix, glm::vec3(3.79, 0.5 + 8, 0.4f));
+			model = translateMatrix * scaleMatrix;
+			cube_tiles[9].drawCubeWithTexture(ourShader, moveMatrix* model);
+
+
+			//window 
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(dx + 4.11, 1, -3.0f + 0.05));
+			scaleMatrix = glm::scale(identityMatrix, glm::vec3(3.25 / 2, 3, 0.05f));
+			model = translateMatrix * scaleMatrix;
+			cube_tiles[1].drawCubeWithTexture(ourShader, moveMatrix* model);
+
+			//window 
+			translateMatrix = glm::translate(identityMatrix, glm::vec3(dx + 4.11 + window_translate, 1 , -3.0f + 0.1));
+			scaleMatrix = glm::scale(identityMatrix, glm::vec3(3.25 / 2, 3, 0.05f));
+			model = translateMatrix * scaleMatrix;
+			cube_tiles[1].drawCubeWithTexture(ourShader, moveMatrix* model);
+
+
+		}
+
+
+		dx += 6.0;
+		dx_window += 4.0;
+
+	}
+}
 void Floor(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, Cube cube_tiles[])
 {
 	glm::mat4 identityMatrix = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
@@ -1167,7 +1347,7 @@ void Floor(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, Cube cube_ti
 
 
 	//shamner block
-	glBindTexture(GL_TEXTURE_2D, tilesTex);
+	//glBindTexture(GL_TEXTURE_2D, tilesTex);
 	translateMatrix = glm::translate(identityMatrix, glm::vec3(0.0f, 0.0, -20.0f)); // grass 20 e sesh hoiche
 	scaleMatrix = glm::scale(identityMatrix, glm::vec3(60.0f, 1.0f, 40.0f));
 	model = translateMatrix * scaleMatrix;
@@ -1229,6 +1409,20 @@ void Floor(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, Cube cube_ti
 	scaleMatrix = glm::scale(identityMatrix, glm::vec3(60.0f, 1.0f, -40.0f));
 	model = translateMatrix * scaleMatrix;
 	cube_tiles[4].drawCubeWithTexture(ourShader, model);
+
+
+	//left close
+	translateMatrix = glm::translate(identityMatrix, glm::vec3(-0.0f, 5.0 - 1.5 - 3, -0.2f));
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(1.0, 20.0, -40.0f));
+	model = translateMatrix * scaleMatrix;
+	cube_tiles[4].drawCubeWithTexture(ourShader, model);
+
+	//up 1st floor
+	translateMatrix = glm::translate(identityMatrix, glm::vec3(-0.0f, 5.0 - 1.5 + 7.0, -0.2f-1.25));
+	scaleMatrix = glm::scale(identityMatrix, glm::vec3(60.0f, 1.0f, -40.0f));
+	model = translateMatrix * scaleMatrix;
+	cube_tiles[4].drawCubeWithTexture(ourShader, model);
+
 
 
 	//shamner wall 1st floor
@@ -1360,11 +1554,11 @@ void Floor(Shader ourShader, glm::mat4 moveMatrix, glm::vec4 color, Cube cube_ti
 
 
 
-	//shamner wall  2nd floor 
-	translateMatrix = glm::translate(identityMatrix, glm::vec3(-0.0f, 5.0 - 1.5, -10.3f));
-	scaleMatrix = glm::scale(identityMatrix, glm::vec3(60.0f, 18.0f, 0.4f));
-	model = translateMatrix * scaleMatrix;
-	cube_tiles[4].drawCubeWithTexture(ourShader, model);
+	////shamner wall  2nd floor 
+	//translateMatrix = glm::translate(identityMatrix, glm::vec3(-0.0f, 5.0 - 1.5, -10.3f));
+	//scaleMatrix = glm::scale(identityMatrix, glm::vec3(60.0f, 18.0f, 0.4f));
+	//model = translateMatrix * scaleMatrix;
+	//cube_tiles[4].drawCubeWithTexture(ourShader, model);
 
 
 
