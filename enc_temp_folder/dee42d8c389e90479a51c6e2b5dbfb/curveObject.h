@@ -27,8 +27,8 @@ public:
     glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
 
 
-    CurveObj(glm::vec4 ambient = glm::vec4(.6f, 0.2f, 0.6f, 1.0f),
-        glm::vec4 diffuse = glm::vec4(.6f, 0.2f, 0.6f, 1.0f),
+    CurveObj(glm::vec4 ambient = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
+        glm::vec4 diffuse = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
         glm::vec4 specular = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)) {
         this->ambient = ambient;
         this->diffuse = diffuse;
@@ -199,7 +199,7 @@ public:
         lightingShader.setVec4("material.ambient", ambient);
         lightingShader.setVec4("material.diffuse", diffuse);
         lightingShader.setVec4("material.specular", specular);
-        lightingShader.setFloat("material.shininess", 32.0f);
+        lightingShader.setFloat("material.shininess", 1.0f);
 
 
 

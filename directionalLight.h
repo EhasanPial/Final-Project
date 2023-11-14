@@ -9,27 +9,28 @@ class DirectionalLight {
 public:
     glm::vec3 direction;
 
-    glm::vec4 ambient;
-    glm::vec4 diffuse;
-    glm::vec4 specular;
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
 
     int lightNumber;
 
-    DirectionalLight(glm::vec3 dir, glm::vec4 amb, glm::vec4 diff, glm::vec4 spec, int num)
+    DirectionalLight(float dirX, float dirY, float dirZ, float ambR, float ambG, float ambB, float diffR, float diffG, float diffB, float specR, float specG, float specB, int num)
     {
-        direction = dir;
-        ambient = amb;
-        diffuse = diff;
-        specular = spec;
+        direction = glm::vec3(dirX, dirY, dirZ);
+        ambient = glm::vec3(ambR, ambG, ambB);
+        diffuse = glm::vec3(diffR, diffG, diffB);
+        specular = glm::vec3(specR, specG, specB);
+
         lightNumber = num;
     }
 
     void setUpLight(Shader& lightingShader)
     {
         lightingShader.use();
-        lightingShader.setVec4("directionalLight.ambient", ambient * ambientOn * isOn);
-        lightingShader.setVec4("directionalLight.diffuse", diffuse * diffuseOn * isOn);
-        lightingShader.setVec4("directionalLight.specular", specular * specularOn * isOn);
+        lightingShader.setVec3("directionalLight.ambient", ambient * ambientOn * isOn);
+        lightingShader.setVec3("directionalLight.diffuse", diffuse * diffuseOn * isOn);
+        lightingShader.setVec3("directionalLight.specular", specular * specularOn * isOn);
         lightingShader.setVec3("directionalLight.direction", direction);
     }
 

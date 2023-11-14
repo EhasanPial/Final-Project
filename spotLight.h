@@ -8,47 +8,49 @@
 class SpotLight {
 public:
     glm::vec3 position;
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+
     glm::vec3 direction;
     float cutOff;
     float outerCutOff;
 
-    glm::vec4 ambient;
-    glm::vec4 diffuse;
-    glm::vec4 specular;
-
-    float Kc;
-    float Kl;
-    float Kq;
+    float k_c;
+    float k_l;
+    float k_q;
     int lightNumber;
 
-    SpotLight(glm::vec3 pos, glm::vec3 dir, float cuOff, float oCuOff, glm::vec4 amb, glm::vec4 diff, glm::vec4 spec, float constant, float linear, float quadratic, int num)
+    SpotLight(float posX, float posY, float posZ, float ambR, float ambG, float ambB, float diffR, float diffG, float diffB, float specR, float specG, float specB, float dirX, float dirY, float dirZ, float cuOff, float outerCuOff, float constant, float linear, float quadratic, int num)
     {
-        position = pos;
-        direction = dir;
+        position = glm::vec3(posX, posY, posZ);
+        ambient = glm::vec3(ambR, ambG, ambB);
+        diffuse = glm::vec3(diffR, diffG, diffB);
+        specular = glm::vec3(specR, specG, specB);
+
+        direction = glm::vec3(dirX, dirY, dirZ);
         cutOff = cuOff;
-        outerCutOff = oCuOff;
-        ambient = amb;
-        diffuse = diff;
-        specular = spec;
-        Kc = constant;
-        Kl = linear;
-        Kq = quadratic;
+        outerCutOff = outerCuOff;
+
+        k_c = constant;
+        k_l = linear;
+        k_q = quadratic;
         lightNumber = num;
     }
 
     void setUpLight(Shader& lightingShader)
     {
         lightingShader.use();
-        lightingShader.setVec4("spotLight.ambient", ambient * ambientOn * isOn);
-        lightingShader.setVec4("spotLight.diffuse", diffuse * diffuseOn * isOn);
-        lightingShader.setVec4("spotLight.specular", specular * specularOn * isOn);
+        lightingShader.setVec3("spotLight.ambient", ambient * ambientOn * isOn);
+        lightingShader.setVec3("spotLight.diffuse", diffuse * diffuseOn * isOn);
+        lightingShader.setVec3("spotLight.specular", specular * specularOn * isOn);
         lightingShader.setVec3("spotLight.position", position);
         lightingShader.setVec3("spotLight.direction", direction);
         lightingShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(cutOff)));
         lightingShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(outerCutOff)));
-        lightingShader.setFloat("spotLight.Kc", Kc);
-        lightingShader.setFloat("spotLight.Kl", Kl);
-        lightingShader.setFloat("spotLight.Kq", Kq);
+        lightingShader.setFloat("spotLight.k_c", k_c);
+        lightingShader.setFloat("spotLight.k_l", k_l);
+        lightingShader.setFloat("spotLight.k_q", k_q);
     }
 
     void turnOff()

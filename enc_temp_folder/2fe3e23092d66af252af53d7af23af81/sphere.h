@@ -33,7 +33,7 @@ public:
 
     float shininess;
     // ctor/dtor
-    Sphere(float radius = 1.0f, int sectorCount = 36, int stackCount = 18, glm::vec3 amb = glm::vec3(.5f, 0.7f, 0.1f), glm::vec3 diff = glm::vec3(.5f, 0.7f, 0.1f), glm::vec3 spec = glm::vec3(0.5f, 0.5f, 0.5f), float shiny = 2.0f) : verticesStride(24)
+    Sphere(float radius = 1.0f, int sectorCount = 36, int stackCount = 18, glm::vec3 amb = glm::vec3(.5f, 0.7f, 0.1f), glm::vec3 diff = glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3 spec = glm::vec3(0.5f, 0.5f, 0.5f), float shiny = 32.0f) : verticesStride(24)
     {
         set(radius, sectorCount, stackCount, amb, diff, spec, shiny);
         buildCoordinatesAndIndices();

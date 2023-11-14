@@ -157,17 +157,18 @@
     <None Include="vertexShader.vs" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\GLFW GLAD Installation Using Visual Studio 2022\opengl\glad.c" />
+    <ClCompile Include="E:\4-2\Lab\Computer Graphics\GLFW GLAD Installation Using Visual Studio 2022\opengl\glad.c" />
     <ClCompile Include="image_loader.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\New folder\cube.h" />
+    <ClInclude Include="..\New folder\shader.h" />
     <ClInclude Include="basic_camera.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="curveObject.h" />
     <ClInclude Include="directionalLight.h" />
     <ClInclude Include="pointLight.h" />
-    <ClInclude Include="shader.h" />
     <ClInclude Include="sphere.h" />
     <ClInclude Include="spotLight.h" />
     <ClInclude Include="stb_image.h" />

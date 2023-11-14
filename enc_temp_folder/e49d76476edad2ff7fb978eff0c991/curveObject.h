@@ -199,7 +199,7 @@ public:
         lightingShader.setVec4("material.ambient", ambient);
         lightingShader.setVec4("material.diffuse", diffuse);
         lightingShader.setVec4("material.specular", specular);
-        lightingShader.setFloat("material.shininess", 32.0f);
+        lightingShader.setFloat("material.shininess", 1.0f);
 
 
 

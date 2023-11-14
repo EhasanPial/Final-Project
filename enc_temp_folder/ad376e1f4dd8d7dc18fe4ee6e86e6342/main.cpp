@@ -426,6 +426,16 @@ int main()
 	stbi_image_free(data);
 
 
+	/*load_texture(texture1, "new_grass.jpg", GL_RGB);
+	load_texture(woodtex, "wood.jpg", GL_RGB);
+	load_texture(redBrickTex, "brickwall_2.jpg", GL_RGB);
+	load_texture(texture3, "brickwall_2.jpg", GL_RGB);
+	load_texture(texture4, "pillar.jpg", GL_RGB);
+	load_texture(marbeltex, "marble.jpg", GL_RGB);
+	load_texture(tilesTex, "tiles.jpg", GL_RGB);
+	load_texture(glasstex, "glass.jpg", GL_RGB);
+	load_texture(tabletex, "table.jpg", GL_RGB);
+	load_texture(coffeetex, "green-coffee.jpg", GL_RGB);*/
 
 	float testBallon = 0.0;
 
@@ -1020,15 +1030,15 @@ void Baloon(Shader ourShader, Shader sphereShader, glm::mat4 moveMatrix, glm::ve
 	all_cubes[3].drawCubeWithTexture(ourShader, moveMatrix * model);
 
 	Sphere s1 = Sphere();
-	s1.ambient = glm::vec3(.1f, 0.6f, 0.8f);
-	s1.diffuse = glm::vec3(.0f, 0.9f, 0.0f);
-	s1.specular = glm::vec3(.1f, .1f, .1f);
-	s1.scale = glm::vec3(.1f, 0.1f, 0.1f);
+
 	s1.drawSphere(sphereShader, moveMatrix, pivot1, translateMatrix,
 		translateToPivot, translateFromPivot, rotateXMatrix);
-	
+	s1.ambient = glm::vec4(.1f, 0.6f, 0.8f, .5f);
+	s1.diffuse = glm::vec4(1.0f, 0.0f, 0.0f, .5f);
+	s1.specular = glm::vec4(1.0f, 1.0f, 1.0f, .5f);
+	s1.scale = glm::vec3(.1f, 0.1f, 0.1f);
 
-	//ourShader.use();
+	ourShader.use();
 
 }
 float  gateAngle = 0;
